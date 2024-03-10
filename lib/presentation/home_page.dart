@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:insta_json_analyzer/app/di/injector.dart';
 import 'package:insta_json_analyzer/app/utils/const.dart';
 import 'package:insta_json_analyzer/app/utils/path.dart';
-import 'package:insta_json_analyzer/domain/entity/profile.dart';
 import 'package:insta_json_analyzer/domain/repository/profile_repository.dart';
 import 'package:insta_json_analyzer/presentation/not_follower_page.dart';
+import 'package:insta_json_analyzer/presentation/not_following_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,7 +26,15 @@ class HomePageState extends State<HomePage> {
     return result.isGranted;
   }
 
-  void _initialyzePage() async {
+  String getErrorMessage() {
+    String returString =
+        'Permessi applicazione mancanti o impossibile trovare file nella cartella $directoryJsonName dentro Download. '
+        'L\'applicazione per funzionare necessita della cartella $directoryJsonName dentro la cartella di Download. '
+        'Dentro alla cartella $directoryJsonName inserire i file presenti dentro la cartella followers_and_following nei dati scaricati da instagram.';
+    return returString;
+  }
+
+  Future<void> _initialyzePage() async {
     isPermission = await _requestPermission(Permission.storage);
     if (!isPermission) return;
     String pathFile = await getDownloadDirectoryPath();
@@ -40,8 +48,9 @@ class HomePageState extends State<HomePage> {
   void initState() {
     isPermission = false;
     super.initState();
-    _initialyzePage();
-    setState(() {});
+    _initialyzePage().then((_) {
+      setState(() {});
+    });
   }
 
   @override
@@ -60,6 +69,21 @@ class HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 15),
+            if (!isPermission) Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                width: 300,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    _initialyzePage().then((_) {
+                      setState(() {});
+                    });
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Riprova'),
+                ),
+              ),
+            ),
             if (!isPermission)
               Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -72,8 +96,7 @@ class HomePageState extends State<HomePage> {
                     icon: Icon(Icons.warning),
                   ),
                   controller: TextEditingController(
-                    text:
-                        'Permessi applicazione mancanti o impossibile trovare file nella cartella $directoryJsonName',
+                    text: getErrorMessage(),
                   ),
                 ),
               ),
@@ -84,7 +107,13 @@ class HomePageState extends State<HomePage> {
                   child: SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const NotFollowingPage()),
+                        );
+                      },
                       icon: const Icon(Icons.search),
                       label: const Text('Visualizza non seguiti'),
                     ),

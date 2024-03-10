@@ -1,1 +1,1 @@
-const String directoryJsonName = 'InstaFile';
+const String directoryJsonName = 'followers_and_following';

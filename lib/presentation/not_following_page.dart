@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:insta_json_analyzer/domain/entity/profile.dart';
-import 'package:insta_json_analyzer/domain/use_case/get_not_follower_list_usa_case.dart';
+import 'package:insta_json_analyzer/domain/use_case/get_not_following_list_usa_case.dart';
 import 'package:insta_json_analyzer/domain/use_case/launch_url_use_case.dart';
 
-class NotFollowerPage extends StatefulWidget {
-  const NotFollowerPage({super.key});
+class NotFollowingPage extends StatefulWidget {
+  const NotFollowingPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => NotFollowerPageState();
+  State<StatefulWidget> createState() => NotFollowingPageState();
 }
 
-class NotFollowerPageState extends State<NotFollowerPage> {
-  GetNotFollowerListUseCase _getNotFollowerListUseCase =
-      GetNotFollowerListUseCase();
+class NotFollowingPageState extends State<NotFollowingPage> {
+  GetNotFollowingListUseCase _getNotFollowingListUseCase =
+      GetNotFollowingListUseCase();
 
   LaunchUrlUseCase _launchUrlUseCase = LaunchUrlUseCase();
 
@@ -33,7 +33,7 @@ class NotFollowerPageState extends State<NotFollowerPage> {
     });
 
     List<ProfileEntity> notFollowerList =
-        await _getNotFollowerListUseCase.getNotFollowerList();
+        await _getNotFollowingListUseCase.getNotFollowingList();
     setState(() {
       _data = notFollowerList;
       _filteredData = notFollowerList;
@@ -81,7 +81,7 @@ class NotFollowerPageState extends State<NotFollowerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Not follower'),
+        title: const Text('Not following'),
       ),
       body: Column(
         children: [
